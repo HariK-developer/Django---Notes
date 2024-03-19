@@ -4,15 +4,20 @@ from django.db import models
 
 
 
+class CustomManger(models.Manager):
+    
+    def valid_data(self,*args, **kwargs):
+        return self.get_queryset().filter(deleted=False)
+        
+
 class  BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField( auto_now=True, auto_now_add=False)
-    isDelete = models.CharField(max_length=50,default='0')
+    updated_at = models.DateTimeField( auto_now=True,)
+    deleted = models.BooleanField(default=False)
     
     
     class Meta:
         abstract = True
-        ordering = ['-created_at']
         
 
 class Note(BaseModel):
@@ -22,3 +27,5 @@ class Note(BaseModel):
     
     class Meta:
         ordering = ['-created_at']
+        
+    objects = CustomManger()
